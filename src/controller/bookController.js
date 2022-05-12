@@ -158,16 +158,16 @@ const updateBooks = async function (req, res) {
 
         // if (!(isValid(bookId))) { return res.status(400).send({ status: false, message: "bookId is required" }) }
         if (!isValidObjectId(bookId)) { return res.status(400).send({ status: false, message: "Valid bookId is required" }) }
-
-        // if (!isValid(data.title)) { return res.status(400).send({ status: false, message: 'Book Title is required' }) }
+        // if(data.title){
+        if (!isValid(data.title)) { return res.status(400).send({ status: false, message: 'Book Title is required' }) }
 
         const newTitle = await bookModel.findOne({ title: data.title });
         if (newTitle) { return res.status(400).send({ status: false, message: "Title  already registered" }) }
 
         // if (!isValid(data.excerpt)) { return res.status(400).send({ status: false, message: 'Excerpt is required' }) }
 
-        const newExcerpt = await bookModel.findOne({ excerpt: data.excerpt })
-        if (newExcerpt) { return res.status(400).send({ status: false, ERROR: "excerpt already exist" }) }
+        // const newExcerpt = await bookModel.findOne({ excerpt: data.excerpt })
+        // if (newExcerpt) { return res.status(400).send({ status: false, ERROR: "excerpt already exist" }) }
 
         // if (!isValid(data.ISBN)) { return res.status(400).send({ status: false, message: "ISBN is required" }) }
         if (!(/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/.test(data.ISBN))) {
@@ -261,7 +261,7 @@ const deleteBook = async function (req, res) {
 
 
 
-module.exports = { bookCreation, getBookById }
+// module.exports = { bookCreation, getBookById }
 module.exports.updateBooks = updateBooks;
 module.exports.deleteBook = deleteBook;
-module.exports = { bookCreation, getBookById, getBooks}
+// module.exports = { bookCreation, getBookById, getBooks}
