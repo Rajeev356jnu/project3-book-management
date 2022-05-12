@@ -18,12 +18,13 @@ const isValidObjectId = function (objectId) {
     return mongoose.Types.ObjectId.isValid(objectId)
 }
 
-// =================================================post review===================================
+
+// =================================================postreview======================================
 const bookReview = async function (req, res) {
     try {
         let paramBookId = req.params.bookId
         let details = req.body
-        console.log(req.params)
+        
         // nothing from body it returns this
         if (!isValidRequestBody(details))
             return res.status(400).send({ status: false, msg: "Please fill body details" })
@@ -41,7 +42,7 @@ const bookReview = async function (req, res) {
         //if bookid and params bookid is same different
         if (paramBookId === bookId) {
             let bookData = details.bookId
-
+            console.log(bookData)
             let BookId = await bookModel.findById(bookData)
             // if book is deleted then return this
             if (BookId.isDeleted)
@@ -63,17 +64,21 @@ const bookReview = async function (req, res) {
         if (!review)
             return res.status(400).send({ status: false, msg: 'review is required' })
 
-        //creation of review
-        let reviewCreation = await reviewModel.create(details)
-        res.status(201).send({ status: true, message: "reviewcreated successfully", data: reviewCreation })
+        let reviewCount= await bookModel.findOneAndUpdate({_id: paramBookId}, {$inc: {reviews: 1}}, {new: true}).lean()
+       
+        details.reviewedAt = new Date()
+       
+        let Review = await reviewModel.create(details)
+        
+        let reviewCreation = await reviewModel.findOne({ id: Review._id }).select({_v:0,createdAt: 0, updatedAt: 0, isDeleted: 0 })
+        reviewCount.reviewsData = reviewCreation
+        return res.status(201).send({ status: true,message: "reviewcreated successfully", data: reviewCount})
     }
     catch (err) {
         console.log(err.message)
         res.status(500).send({ status: false, msg: err.message })
-    }
-}
-
-
+    }}
+//=================================updateReview=========================================================
 const updateReview = async function (req, res) {
     try {
         let bookid = req.params.bookId
@@ -88,10 +93,6 @@ const updateReview = async function (req, res) {
             return res.status(404).send({ status: false, message: "No such book" })
         }
 
-        // if (book.isDeleted == true) {
-        //     return res.status(404).send({ status: false, message: "Book not found" })
-        // }
-
         if (!isValidObjectId(review_id)) {
             return res.status(400).send({ status: false, message: "please enter a valid review_i" })
         }
@@ -100,10 +101,6 @@ const updateReview = async function (req, res) {
         if (!reviews) {
             return res.status(404).send({ status: false, message: "No such review for this book" })
         }
-
-        // if (reviews.isDeleted == true) {
-        //     return res.status(404).send({ status: false, message: "There is no review" })
-        // }
 
         let info = req.body
         if (!isValidRequestBody(info)) {
