@@ -57,8 +57,9 @@ const createUser = async function (req, res) {
             return res.status(400).send({ status: false, message: "Password is required" })
         }
 
-        if (!(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/.test(data.password))) {
-            return res.status(400).send({ status: false, message: "Password need minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character" })
+         if (!(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/.test(data.password))) {
+             
+             return res.status(400).send({ status: false, message: "Password need minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character" })
         }
         if (!isValid(data.address.street)) {
             return res.status(400).send({ status: false, message: "streetName is required" })

@@ -26,7 +26,7 @@ const bookCreation = async function (req, res) {
             return res.status(400).send({ status: false, msg: "Please fill book details" })
 
         //details to be in body 
-        let { title, excerpt, userId, ISBN, category, subcategory } = details
+        let { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = details
 
         //validation start
         if (!isValid(title))
@@ -61,13 +61,18 @@ const bookCreation = async function (req, res) {
         // subcategory is not present in the body
         if (!subcategory)
             return res.status(400).send({ status: false, msg: 'subcategory is required' })
+        if (!releasedAt)
+            return res.status(400).send({ status: false, msg: 'releasedAt is required' })
+        if (!(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/.test(releasedAt))) {
+                return res.status(400).send({ status: false, message: "date should be in yyyy-mm-dd format" })
+            }
 
         //creation of book with everything is working fine
         let bookCreation = await bookModel.create(details)
         res.status(201).send({ status: true, message: "bookcreated successfully", data: bookCreation })
     }
     catch (err) {
-        console.log(err.message)
+        
         res.status(500).send({ status: false, msg: err.message })
     }
 }
@@ -88,7 +93,7 @@ const getBooks = async function (req, res) {
         const books = await bookModel.find({ $and: [queryParams, { isDeleted: false }] }).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 }).collation({ locale: "en" }).sort({ title: 1 })
 
         if (books.length == 0) return res.status(404).send({ status: false, message: "No books Available." })
-        return res.status(200).send({ status: true, message: 'list of books which is is deleted false', count: books.length, data: books });
+        return res.status(200).send({ status: true, message: 'list of books which is isDeleted false', count: books.length, data: books });
     }
 
 
@@ -109,6 +114,7 @@ const getBookById = async function (req, res) {
         }
 
         let book = await bookModel.findOne({ _id: bookid, isDeleted:false }).lean()
+        console.log(book)
         if (!book) {
             return res.status(404).send({ status: false, message: "no such book is available " })
         }
@@ -154,7 +160,7 @@ const updateBooks = async function (req, res) {
         // if (!(isValid(bookId))) { return res.status(400).send({ status: false, message: "bookId is required" }) }
         if (!isValidObjectId(bookId)) { return res.status(400).send({ status: false, message: "Valid bookId is required" }) }
         // if(data.title){
-        if (!isValid(data.title)) { return res.status(400).send({ status: false, message: 'Book Title is required' }) }
+        // if (!isValid(data.title)) { return res.status(400).send({ status: false, message: 'Book Title is required' }) }
 
         const newTitle = await bookModel.findOne({ title: data.title });
         if (newTitle) { return res.status(400).send({ status: false, message: "Title  already registered" }) }
@@ -176,11 +182,11 @@ const updateBooks = async function (req, res) {
 
         if (!isValid(data.releasedAt)) { return res.status(400).send({ status: false, message: 'enter the released date of the book' }) }
         if (!(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/.test(data.releasedAt))) {
-            return res.status(400).send({ status: false, message: "released Date is not valid" })
+            return res.status(400).send({ status: false, message: "date should be in yyyy-mm-dd format" })
         }
         // const releasedAt = new Date().toISOString().slice(0, 10);
         // if(!(data.releasedAt)){
-        //     return res.status(400).send({ status: false, message: "today's date should be in yyyy-mm-dd format" })
+        //     return res.status(400).send({ status: false, message: " date should be in yyyy-mm-dd format" })
         // }
 
 
@@ -245,13 +251,10 @@ const deleteBook = async function (req, res) {
 
 
 
-<<<<<<< HEAD
 // module.exports = { bookCreation, getBookById }
 module.exports.updateBooks = updateBooks;
 module.exports.deleteBook = deleteBook;
 // module.exports = { bookCreation, getBookById, getBooks}
-=======
 
 
 module.exports = { bookCreation, getBookById, getBooks,updateBooks,deleteBook}
->>>>>>> f04d67dc8248b090de6243a4b70f9eaf9f5a8a6f
