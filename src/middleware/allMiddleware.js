@@ -37,7 +37,7 @@ const authorization1 = async function(req,res,next){
         if(!isValidObjectId(bookId)){
             return res.status(400).send({ status: false, msg: "Please enter valid bookId" })
          }
-        let book = await bookModel.findOne({_id:bookId, isDeleted:false});
+         let book = await bookModel.findOne({_id:bookId, isDeleted:false});
         if(!book){
             return res.status(404).send({ status: false, message: "No such book" }) 
         }
@@ -68,6 +68,5 @@ const authorization2 = async function(req,res,next){
     }
 }
 
-module.exports.authentication = authentication;
-module.exports.authorization1 = authorization1;
-module.exports.authorization2 = authorization2;
+module.exports = {authentication,authorization1,authorization2}
+
