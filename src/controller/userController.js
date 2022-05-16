@@ -39,7 +39,7 @@ const createUser = async function (req, res) {
 
         if (!isValid(data.email)) { return res.status(400).send({ status: false, message: "email id is required" }) }
 
-        if (!(/^\w+([\.-]?\w+)@\w+([\. -]?\w+)(\.\w{2,3})+$/.test(data.email))) {
+        if (!(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(data.email))) {
             return res.status(400).send({ status: false, message: "Email should be a valid email address" })
         }
         //---------------------------check email duplicacy---------------------------------------//
@@ -92,7 +92,7 @@ const isValidRequestBody = function (requestBody) {
 const loginUser = async function (req, res) {
     try {
         const requestBody = req.body;
-        let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        let regex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
         let regex1 = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/
         if (!isValidRequestBody(requestBody)) {
             res.status(400).send({ status: false, message: "Invalid request parameters please provide login details" })
