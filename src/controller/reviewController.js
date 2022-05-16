@@ -1,5 +1,5 @@
 const bookModel = require("../models/bookModel")
-//const userModel = require("../models/userModel")
+
 const reviewModel = require("../models/reviewModel")
 const mongoose = require('mongoose')
 
@@ -44,7 +44,7 @@ const bookReview = async function (req, res) {
         //checking for rating
         if (!isValid(rating)) return res.status(400).send({ status: false, msg: 'rating needed' })
         if (!(rating >= 1 && rating <= 5)) {
-            return  res.status(400).send({ status: true, mag: "rating should be between 1 and 5" })
+            return  res.status(400).send({ status: true, msg: "rating should be between 1 and 5" })
          }
         //checking for review
         if (!isValid(review))
@@ -55,14 +55,14 @@ const bookReview = async function (req, res) {
         // }
         let reviewCount = await bookModel.findOneAndUpdate({ _id: paramBookId }, { $inc: { reviews: 1 } }, { new: true }).lean()
         details.reviewedAt = new Date()
-        let Review = await reviewModel.create(details)
-        let reviewCreation = await reviewModel.findOne({ _id: Review._id }).select({ _v: 0, createdAt: 0, updatedAt: 0, isDeleted: 0 })
+         let Review = await reviewModel.create(details)
+
+         let reviewCreation = await reviewModel.findOne({ _id: Review._id }).select({ _v: 0, createdAt: 0, updatedAt: 0, isDeleted: 0 })
         reviewCount.reviewsData = reviewCreation
         return res.status(201).send({ status: true, message: "reviewcreated successfully", data: reviewCount })
     }
     catch (err) {
-        console.log(err.message)
-        res.status(500).send({ status: false, msg: err.message })
+       res.status(500).send({ status: false, msg: err.message })
     }
 }
 
@@ -102,7 +102,7 @@ const updateReview = async function (req, res) {
             return res.status(400).send({ status: false, message: "please enter reviewedBy details" })
         
     }
-        // }
+        
     
          if (!isValid(info.review)) {
             return res.status(400).send({ status: false, message: "please enter review details" })
@@ -176,7 +176,7 @@ const deleteReview = async function (req, res) {
 
     }
     catch (err) {
-        console.log("This is the error :", err.message);
+        
         res.status(500).send({ msg: "Error", error: err.message });
     }
 }
