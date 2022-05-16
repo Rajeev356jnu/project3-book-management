@@ -20,8 +20,10 @@ const createUser = async function (req, res) {
             return res.status(400).send({ status: false, message: "Please Provide Valid Input Details" })
         }
 
-        if (!isValid(data.title)) { return res.status(400).send({ status: false, message: "Title must be:['Mr', 'Mrs', 'Miss'] " }) }
-        if (["Mr", "Mrs", "Miss"].indexOf(data.title) == -1) return res.status(400).send({ status: false, data: "Enter a valid title Mr or Mrs or Miss ", });
+        if (!isValid(data.title)) {
+            return res.status(400).send({ status: false, message: "Title must be:['Mr', 'Mrs', 'Miss'] " }) 
+        }
+        if (["Mr", "Mrs", "Miss"].indexOf(data.title) == -1) return res.status(400).send({ status: false, message: "Enter a valid title Mr or Mrs or Miss ", });
 
         if (!isValid(data.name)) {
             return res.status(400).send({ status: false, message: "Name is required" })
@@ -37,20 +39,20 @@ const createUser = async function (req, res) {
 
         if (!isValid(data.email)) { return res.status(400).send({ status: false, message: "email id is required" }) }
 
-        if (!(/^\w+([\.-]?\w+)@\w+([\. -]?\w+)(\.\w{2,3})+$/.test(data.email))) {
+        if (!(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(data.email))) {
             return res.status(400).send({ status: false, message: "Email should be a valid email address" })
         }
         //---------------------------check email duplicacy---------------------------------------//
         let checkEmail = await userModel.findOne({ email: data.email })
         if (checkEmail) {
 
-            return res.status(400).send({ message: "Email Already exist" })
+            return res.status(400).send({status:false, message: "Email Already exist" })
         }
 
         //---------------------------check phone duplicacy---------------------------------------//
         let checkPhone = await userModel.findOne({ phone: data.phone })
         if (checkPhone) {
-            return res.status(400).send({ message: "phone Already exist" })
+            return res.status(400).send({ status:false, message: "phone Already exist" })
         }
 
         if (!isValid(data.password)) {
@@ -91,7 +93,7 @@ const isValidRequestBody = function (requestBody) {
 const loginUser = async function (req, res) {
     try {
         const requestBody = req.body;
-        let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        let regex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
         let regex1 = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/
         if (!isValidRequestBody(requestBody)) {
             res.status(400).send({ status: false, message: "Invalid request parameters please provide login details" })
@@ -125,6 +127,7 @@ const loginUser = async function (req, res) {
             return
         }
 
+        
         const token = jwt.sign({
             userId: user._id,
             iat: Math.floor(Date.now() / 1000),
