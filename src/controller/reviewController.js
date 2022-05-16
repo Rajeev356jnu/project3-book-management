@@ -18,7 +18,7 @@ const isValidObjectId = function (objectId) {
 }
 
 
-// ===================================  Post Review   ==============================
+// ===================================  Post Review   ======================================
 
 
 
@@ -50,8 +50,6 @@ const bookReview = async function (req, res) {
    }
    requestBody["reviewedBy"]= reviewedBy
 }
-
-
 
 
         if (!isValid(rating)) return res.status(400).send({ status: false, msg: 'rating needed' })

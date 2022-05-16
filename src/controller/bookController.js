@@ -198,7 +198,7 @@ const updateBooks = async function (req, res) {
             if (!isValid(releasedAt)) {
                 return res.status(400).send({ status: false, message: "give releasedAt in the request body" })
             }
-            if (!(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/.test(data.releasedAt))) {
+            if (!(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/.test(releasedAt))) {
                 return res.status(400).send({ status: false, message: "Data should be in yyyy-mm-dd format" })
             }
 
@@ -213,10 +213,10 @@ const updateBooks = async function (req, res) {
                 return res.status(400).send({ status: false, message: "give ISBN in the request body" })
             }
 
-            if (!(/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/.test(data.ISBN))) {
+            if (!(/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/.test(ISBN))) {
                 return res.status(400).send({ status: false, message: "ISBN is not valid" })
             }
-            const newISBN = await bookModel.findOne({ ISBN: data.ISBN });
+            const newISBN = await bookModel.findOne({ ISBN: ISBN });
             if (newISBN) {
                 return res.status(400).send({ status: false, message: "ISBN  already registered" })
 
