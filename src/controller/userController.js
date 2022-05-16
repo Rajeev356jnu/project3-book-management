@@ -20,8 +20,10 @@ const createUser = async function (req, res) {
             return res.status(400).send({ status: false, message: "Please Provide Valid Input Details" })
         }
 
-        if (!isValid(data.title)) { return res.status(400).send({ status: false, message: "Title must be:['Mr', 'Mrs', 'Miss'] " }) }
-        if (["Mr", "Mrs", "Miss"].indexOf(data.title) == -1) return res.status(400).send({ status: false, data: "Enter a valid title Mr or Mrs or Miss ", });
+        if (!isValid(data.title)) {
+            return res.status(400).send({ status: false, message: "Title must be:['Mr', 'Mrs', 'Miss'] " }) 
+        }
+        if (["Mr", "Mrs", "Miss"].indexOf(data.title) == -1) return res.status(400).send({ status: false, message: "Enter a valid title Mr or Mrs or Miss ", });
 
         if (!isValid(data.name)) {
             return res.status(400).send({ status: false, message: "Name is required" })
@@ -44,13 +46,13 @@ const createUser = async function (req, res) {
         let checkEmail = await userModel.findOne({ email: data.email })
         if (checkEmail) {
 
-            return res.status(400).send({ message: "Email Already exist" })
+            return res.status(400).send({status:false, message: "Email Already exist" })
         }
 
         //---------------------------check phone duplicacy---------------------------------------//
         let checkPhone = await userModel.findOne({ phone: data.phone })
         if (checkPhone) {
-            return res.status(400).send({ message: "phone Already exist" })
+            return res.status(400).send({ status:false, message: "phone Already exist" })
         }
 
         if (!isValid(data.password)) {

@@ -11,13 +11,13 @@ const authentication = function ( req, res, next) {
         let token = (req.headers["x-user-key"]); 
 
         if(!token){
-            return res.status(400).send({error : "Token must be present...!"});
+            return res.status(400).send({status:false, message: "Token must be present...!"});
         }
 
         let decodedToken = jwt.verify(token, 'somesecureprivatekey');
 
         if (!decodedToken){
-            return res.status(400).send({ status: false, msg: "Token is invalid"});
+            return res.status(400).send({ status: false, message: "Token is invalid"});
         }
           
         let userLoggedIn = decodedToken.userId;
@@ -35,14 +35,14 @@ const authorization1 = async function(req,res,next){
         let bookId = req.params.bookId;
         let id = req.userId;
         if(!isValidObjectId(bookId)){
-            return res.status(400).send({ status: false, msg: "Please enter valid bookId" })
+            return res.status(400).send({ status: false, message: "Please enter valid bookId" })
          }
          let book = await bookModel.findOne({_id:bookId, isDeleted:false});
         if(!book){
             return res.status(404).send({ status: false, message: "No such book" }) 
         }
         if(id != book.userId){
-            return res.status(403).send({status: false , msg : "Not authorized..!" });
+            return res.status(403).send({status: false , message : "Not authorized..!" });
         }
         next();
     }
@@ -56,10 +56,10 @@ const authorization2 = async function(req,res,next){
         let createId = req.body.userId;
         let id = req.userId;
         if(!isValidObjectId(createId)){
-            return res.status(400).send({ status: false, msg: "Please enter valid userId" })
+            return res.status(400).send({ status: false, message: "Please enter valid userId" })
          }
         if(id != createId){
-            return res.status(403).send({status: false , msg : "Not authorized..!" });
+            return res.status(403).send({status: false , message : "Not authorized..!" });
         }
         next();
     }
