@@ -31,6 +31,9 @@ const bookSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  bookCover:{
+    type:String
+},
   subcategory: {
     type: [{type: String,required: true,trim: true}]
   },
